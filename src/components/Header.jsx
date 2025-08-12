@@ -38,10 +38,10 @@ const SiteInfoBtn = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: normal;
 
   span {
-    font-size: 0.625em;
+    font-size: 0.715em;
   }
 `;
