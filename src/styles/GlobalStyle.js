@@ -8,6 +8,7 @@ export const GlobalStyle = createGlobalStyle`
     height: 100%;
     font-family: 'Pretendard', 'Apple SD Gothic Neo', 'sans-serif';
     font-size: clamp(14px, 2.5vw, 16px);
+    font-weight: 500;
     background: #fff;
     color: #333;
     letter-spacing: -0.03em;
@@ -27,5 +28,9 @@ export const GlobalStyle = createGlobalStyle`
     outline: none;
     border: none;
     background: none;
+  }
+  
+  button {
+    cursor: pointer;
   }
 `;
