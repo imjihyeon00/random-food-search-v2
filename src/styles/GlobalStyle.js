@@ -8,7 +8,7 @@ export const GlobalStyle = createGlobalStyle`
     height: 100%;
     font-family: 'Pretendard', 'Apple SD Gothic Neo', 'sans-serif';
     font-size: clamp(14px, 2.5vw, 16px);
-    font-weight: 500;
+    font-weight: 400;
     background: #fff;
     color: #333;
     letter-spacing: -0.03em;
