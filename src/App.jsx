@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import { Routes, Route, Outlet } from "react-router-dom";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import { useKakaoLoader } from "react-kakao-maps-sdk";
 
 function Layout() {
   return (
@@ -23,6 +24,13 @@ function Layout() {
 }
 
 export default function App() {
+  const [loading, error] = useKakaoLoader({
+    appkey: import.meta.env.VITE_KAKAOMAP_API_KEY, // 반드시 VITE_ 접두사
+    libraries: ["services"],                    // ← Places 필수
+  });
+
+  if (error) return <div>카카오 지도 로드 오류: {String(error)}</div>;
+  if (loading) return <div>지도를 준비 중…</div>;
   return (
     <ThemeProvider theme={{}}>
       <GlobalStyle />
