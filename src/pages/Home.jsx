@@ -7,15 +7,21 @@ import TryImage from '../assets/try_site.svg';
 import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
 import useMapController from '../hook/useMapController';
 import { FILTER_LIST } from '../constants/filter';
+import { useEffect } from 'react';
 
 export default function Home() {
   const {
-  center, isLoading, errMsg, onMapClick,
-  chip, setChip,
-  searchFood,
-} = useMapController({ initialChip: FILTER_LIST[0], radius: 3000 });
+    center, isLoading, errMsg, onMapClick,
+    chip, setChip,
+    results, markers, searchFood,
+  } = useMapController({ initialChip: FILTER_LIST[0], radius: 500 });
 
 
+
+  useEffect(()=>{
+    console.log("resultes: ",results);
+    
+  },[results])
   return (
     <HomeContainer>
       <MapArea>
@@ -27,12 +33,32 @@ export default function Home() {
             onClick={onMapClick}
           >
             {!isLoading && (
-              <MapMarker position={center}>
+              <MapMarker 
+                position={center}
+                image={{
+                  src: "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png", // 마커이미지의 주소입니다
+                  size: {
+                    width: 24,
+                    height: 35
+                  }, // 마커이미지의 크기입니다
+                }}
+              >
                 <div style={{ padding: 5, color: "#000" }}>
                   {errMsg ? errMsg : "여기에 계신가요?!"}
                 </div>
               </MapMarker>
             )}
+            {markers.map((marker) => (
+              <MapMarker
+                key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+                position={marker.position}
+                // onClick={() => setInfo(marker)}
+              >
+                {/* {info &&info.content === marker.content && ( */}
+                  <div style={{color:"#000"}}>{marker.content}</div>
+                {/* )} */}
+              </MapMarker>
+            ))}
           </Map>
         </MapBox>
 
