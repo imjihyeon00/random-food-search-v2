@@ -84,9 +84,11 @@ export default function useKakaoPlacesByChip({
         
       } else if (s === window.kakao.maps.services.Status.ZERO_RESULT) {
         setResults([]);
+        setMarkers([]);
         setStatus("zero");
       } else {
         setResults([]);
+        setMarkers([]);
         setStatus("error");
         setError("검색 중 오류가 발생했어요.");
       }
