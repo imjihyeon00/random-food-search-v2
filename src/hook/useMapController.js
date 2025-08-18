@@ -5,12 +5,12 @@ import { FILTER_LIST } from "../constants/filter";
 
 export default function useMapController({
   initialChip = FILTER_LIST[0],
-  radius = 3000,
+  radius = 500,
 } = {}) {
   const { center, setCenter, errMsg, setErrMsg, isLoading, supported } = useGeolocation();
   const [chip, setChip] = useState(initialChip);
 
-  const { results, status, error, ready, searchFood } =
+  const { results, markers, searchFood } =
     useKakaoPlacesByChip({ chip, center, radius });
 
   const onMapClick = useCallback((_, mouseEvent) => {
@@ -28,7 +28,7 @@ export default function useMapController({
     chip, setChip,
 
     // 검색
-    results, status, error, ready, searchFood,
+    results, markers, searchFood,
 
     // 지도 이벤트
     onMapClick,

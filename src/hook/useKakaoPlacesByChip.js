@@ -6,11 +6,12 @@ import { FILTER_LIST } from "../constants/filter";
 export default function useKakaoPlacesByChip({
   chip = FILTER_LIST[0],
   center,           // { lat, lng } - 검색 기준점(내가 정한 위치)
-  radius = 3000,    // meters
+  radius = 500,    // meters
 } = {}) {
   const [results, setResults] = useState([]);
   const [status, setStatus] = useState("idle"); // idle|loading|ok|zero|error
   const [error, setError] = useState(null);
+  const [markers, setMarkers] = useState([])
   const psRef = useRef(null);
   const centerRef = useRef(center);
   useEffect(() => { centerRef.current = center; }, [center]);
@@ -35,13 +36,14 @@ export default function useKakaoPlacesByChip({
     
     // 필수 전제 체크
     if (!hasSDK) {
-      
+      console.error("Kakao SDK not ready")
       setError("Kakao SDK not ready");
       return;
     }
     const currentCenter = centerRef.current;
     if (!currentCenter?.lat || !currentCenter?.lng) {
       
+      console.error("검색 기준 좌표가 없습니다.")
       setError("검색 기준 좌표가 없습니다.");
       return;
     }
@@ -60,6 +62,25 @@ export default function useKakaoPlacesByChip({
         setResults(filtered);
         setStatus(filtered.length ? "ok" : "zero");
         console.log(filtered);
+
+        // const bounds = new window.kakao.maps.LatLngBounds()
+        let markers = []
+
+        for (var i = 0; i < data.length; i++) {
+          markers.push({
+            position: {
+              lat: data[i].y,
+              lng: data[i].x,
+            },
+            content: data[i].place_name,
+          })
+
+          // bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x))
+        }
+        setMarkers(markers)
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        // map.setBounds(bounds)
         
       } else if (s === window.kakao.maps.services.Status.ZERO_RESULT) {
         setResults([]);
@@ -82,6 +103,7 @@ export default function useKakaoPlacesByChip({
 
 
   return {
+    markers,
     results,
     status,
     error,
