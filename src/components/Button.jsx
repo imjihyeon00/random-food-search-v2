@@ -20,10 +20,11 @@ export default function Button({
   className = "",
   fullWidth = false,
   size = BUTTON_SIZES_TYPE.sm, // 기본값은 SMALL
+  active=false
 }) {
   return (
     <ButtonStyle
-      className={`custom-button ${className}`}
+      className={`custom-button ${className} ${active?"active":""}`}
       onClick={onClick}
       disabled={disabled}
       $fullWidth={fullWidth}
