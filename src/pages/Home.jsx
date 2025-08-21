@@ -4,24 +4,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { BUTTON_SIZES_TYPE } from '../constants/styled';
 import TryImage from '../assets/try_site.svg'; 
+import EmptyListImage from '../assets/empty_list.svg'; 
 import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
 import useMapController from '../hook/useMapController';
 import { FILTER_LIST } from '../constants/filter';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [isStart, setIsStart] = useState(false);
   const {
     center, isLoading, errMsg, onMapClick,
     chip, setChip,
     results, markers, searchFood,
   } = useMapController({ initialChip: FILTER_LIST[0], radius: 500 });
 
-
-
   useEffect(()=>{
     console.log("resultes: ",results);
     
   },[results])
+
   return (
     <HomeContainer>
       <MapArea>
@@ -55,7 +56,10 @@ export default function Home() {
                 // onClick={() => setInfo(marker)}
               >
                 {/* {info &&info.content === marker.content && ( */}
-                  <div style={{color:"#000"}}>{marker.content}</div>
+                  {/* <div style={{color:"#333"}}>{marker.content}</div> */}
+                  <MarkerText>
+                    {marker.content}
+                  </MarkerText>
                 {/* )} */}
               </MapMarker>
             ))}
@@ -81,17 +85,44 @@ export default function Home() {
           </FilterBox>
           <Button 
             text="랜덤 음식점 찾기" 
-            onClick={()=>{searchFood()}} 
+            onClick={()=>{
+              searchFood()
+              setIsStart(true)
+            }} 
             fullWidth={true}
             size={BUTTON_SIZES_TYPE.lg}
           />
         </FilterArea>
       </MapArea>
       <ListArea>
+        {isStart ?
+        <>
+          {results.length > 0 ?
+            <ReasultList className="searchList">
+              {results.map((list, idx)=>(
+                <ReasultItem key={idx}>
+                  <div className="title">
+                    <h2>{list.place_name}</h2>
+                    <span>{list.category_name.split(">").map(c => c.trim()).pop()}</span>
+                  </div>
+                  <p>{list.road_address_name}</p>
+                  <p>{list.phone}</p>
+                </ReasultItem>
+              ))}
+            </ReasultList>
+          : 
+          <TryBox>
+            <img src={EmptyListImage} alt="주변에 음식점이 없어요!!" />
+            <p>앗!! 주변에 {chip} 음식점이 없어요!!</p>
+          </TryBox>
+          }
+        </>
+        :
         <TryBox>
           <img src={TryImage} alt="랜덤 음식점 찾기" />
           <p>오늘은 뭘 먹어볼까?!?!</p>
         </TryBox>
+        }
       </ListArea>
     </HomeContainer>
   )
@@ -120,6 +151,16 @@ const MapBox = styled.div`
   aspect-ratio: 600 / 450;
   background-color: #e0e0e0;
 `;
+const MarkerText = styled.div`
+  width: 100%;
+  padding: 5px 8px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+`;
+
 const FilterArea = styled.div`
   width: 100%;
   max-width: 1000px;
@@ -145,10 +186,6 @@ const FilterBox = styled.div`
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-
-    button {
-      width: auto;
-    }
   }
 
   @media (max-width: 768px) {
@@ -160,6 +197,7 @@ const FilterBox = styled.div`
 
 const ListArea = styled.div`
   width: 100%;
+  max-width: 1000px;
 `;
 
 const TryBox = styled.div`
@@ -180,5 +218,32 @@ const TryBox = styled.div`
     text-align: center;
     font-size: 1rem;
     color: #666;
+  }
+`;
+
+const ReasultList = styled.ul`
+  display: flex;
+  gap: 6px;
+  flex-direction: column;
+
+`;
+const ReasultItem = styled.li`
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px; 
+
+  .title {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    gap: 8px;
+
+    h2 {
+      font-weight: 700;
+    }
+    span {
+      font-size: 0.75em;
+    }
   }
 `;
