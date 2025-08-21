@@ -36,7 +36,7 @@ export default function Button({
 };
 
 const ButtonStyle = styled.button`
-  width: 100%;
+  width: ${({ $fullWidth }) => $fullWidth ? "100%" : "auto"};
   background-color: #fff;
   padding: ${({ $size }) => $size.PADDING || BUTTON_SIZE[BUTTON_SIZES_TYPE.sm].PADDING};
   border: 1px solid #ddd;
