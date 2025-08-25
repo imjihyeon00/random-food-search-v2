@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import EmptyListImage from '../assets/empty_list.svg'; 
+import ImageMessage from './ImageMessage';
 
 
 export default function StoreList({results, chip, onItemClick}) {

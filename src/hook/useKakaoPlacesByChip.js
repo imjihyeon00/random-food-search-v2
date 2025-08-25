@@ -13,6 +13,8 @@ export default function useKakaoPlacesByChip({
   const [markers, setMarkers] = useState([]);
   const [status, setStatus] = useState("idle"); // idle|loading|ok|zero|error
   const [error, setError] = useState(null);
+  const [randomStore, setRandomStore] = useState()
+
 
   const psRef = useRef(null);
   const centerRef = useRef(center);
@@ -103,11 +105,14 @@ export default function useKakaoPlacesByChip({
     setResults(acc);
     setMarkers(accMarkers);
     setStatus(acc.length ? "ok" : "zero");
+    setRandomStore(acc[Math.floor(Math.random() * acc.length)]);
+
   }, [hasSDK, ensureService, fetchPage]);
 
   return {
     markers,
     results,
+    randomStore,
     status,
     error,
     ready: hasSDK,   // 버튼 활성화에 사용

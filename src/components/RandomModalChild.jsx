@@ -7,14 +7,14 @@ import { BUTTON_SIZES_TYPE } from "../constants/styled";
 export default function RandomModalChild({ item }) { // ✅ 구조분해로 받기
   // Kakao API의 x/y는 문자열일 수 있으니 숫자로 변환
   const center = useMemo(() => ({
-    lat: Number(item.y),
-    lng: Number(item.x),
-  }), [item.y, item.x]);
+    lat: Number(item?.y),
+    lng: Number(item?.x),
+  }), [item?.y, item?.x]);
 
   const markers = useMemo(() => [{
-    position: { lat: Number(item.y), lng: Number(item.x) },
-    text: item.place_name,
-  }], [item.y, item.x, item.place_name]);
+    position: { lat: Number(item?.y), lng: Number(item?.x) },
+    text: item?.place_name,
+  }], [item?.y, item?.x, item?.place_name]);
   
   if (!item) return null;
 

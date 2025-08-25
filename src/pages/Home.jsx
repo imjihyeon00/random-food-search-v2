@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
 import { styled } from 'styled-components';
 import { BUTTON_SIZES_TYPE } from '../constants/styled';
@@ -20,13 +20,22 @@ export default function Home() {
   const {
     center, isLoading, errMsg, onMapClick,
     chip, setChip,
-    markers, results, status, error, ready, searchFood,
+    markers, results, status, error, ready, searchFood, randomStore
   } = useMapController({ initialChip: FILTER_LIST[0], radius: 500 });
+
+  
 
   const onListClick = (item) => {
     setSelectStore(item)
     setModalOpen(true)
   }
+
+  // Random으로 가져온 음식점 모당띄우기
+  useEffect(() => {
+  if (results.length > 0 && randomStore) {
+    onListClick(randomStore);
+  }
+}, [randomStore, results]);
 
   return (
     <HomeContainer>
