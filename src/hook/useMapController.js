@@ -10,7 +10,7 @@ export default function useMapController({
   const { center, setCenter, errMsg, setErrMsg, isLoading, supported } = useGeolocation();
   const [chip, setChip] = useState(initialChip);
 
-  const { results, markers, searchFood } =
+  const { markers, results, status, error, ready: hasSDK, searchFood,} =
     useKakaoPlacesByChip({ chip, center, radius });
 
   const onMapClick = useCallback((_, mouseEvent) => {
@@ -28,7 +28,7 @@ export default function useMapController({
     chip, setChip,
 
     // 검색
-    results, markers, searchFood,
+    markers, results, status, error, ready: hasSDK, searchFood,
 
     // 지도 이벤트
     onMapClick,

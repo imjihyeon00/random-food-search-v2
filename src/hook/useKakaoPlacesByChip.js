@@ -2,21 +2,23 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FILTER_LIST } from "../constants/filter";
 
-// chip: "전체" | "한식" | ...
 export default function useKakaoPlacesByChip({
   chip = FILTER_LIST[0],
-  center,           // { lat, lng } - 검색 기준점(내가 정한 위치)
-  radius = 500,    // meters
+  center,
+  radius = 500,
+  pageSize = 15,
+  maxPages = 3,        // Kakao JS SDK는 보통 3페이지(45개) 한계
 } = {}) {
   const [results, setResults] = useState([]);
+  const [markers, setMarkers] = useState([]);
   const [status, setStatus] = useState("idle"); // idle|loading|ok|zero|error
   const [error, setError] = useState(null);
-  const [markers, setMarkers] = useState([])
+
   const psRef = useRef(null);
   const centerRef = useRef(center);
+  const searchTokenRef = useRef(0);
   useEffect(() => { centerRef.current = center; }, [center]);
 
-  // SDK 준비 여부
   const hasSDK = useMemo(() => {
     const k = typeof window !== "undefined" ? window.kakao : undefined;
     return !!(k && k.maps && k.maps.services && k.maps.services.Places);
@@ -32,77 +34,76 @@ export default function useKakaoPlacesByChip({
 
   const isAll = chip === "전체";
 
-  const searchFood = useCallback(() => {
-    
-    // 필수 전제 체크
-    if (!hasSDK) {
-      console.error("Kakao SDK not ready")
-      setError("Kakao SDK not ready");
-      return;
-    }
-    const currentCenter = centerRef.current;
-    if (!currentCenter?.lat || !currentCenter?.lng) {
-      
-      console.error("검색 기준 좌표가 없습니다.")
-      setError("검색 기준 좌표가 없습니다.");
-      return;
-    }
+  // ❶ 단일 페이지를 Promise로 감싸기 (SDK의 pagination → 우리쪽 isEnd)
+  const fetchPage = useCallback((ps, loc, page) => {
+    return new Promise((resolve) => {
+      const opts = { location: loc, radius, page, size: pageSize };
+      const cb = (data, s, pagination) => {
+        if (s === window.kakao.maps.services.Status.OK) {
+          const pageData = isAll ? data : data.filter(d => d.category_group_code === "FD6");
+          const isEnd = !(pagination?.hasNextPage) || page >= maxPages; // ← SDK를 isEnd로 추상화
+          resolve({ ok: true, isEnd, data: pageData });
+        } else if (s === window.kakao.maps.services.Status.ZERO_RESULT) {
+          resolve({ ok: true, isEnd: true, data: [] });
+        } else {
+          resolve({ ok: false, isEnd: true, data: [], error: "검색 중 오류가 발생했어요." });
+        }
+      };
+      isAll ? ps.categorySearch("FD6", cb, opts) : ps.keywordSearch(chip, cb, opts);
+    });
+  }, [radius, pageSize, maxPages, isAll, chip]);
+
+  // ❷ 전체 페이지 수집
+  const searchFood = useCallback(async () => {
+    const token = ++searchTokenRef.current;
+
+    if (!hasSDK) { setStatus("error"); setError("Kakao SDK not ready"); return; }
+    const c = centerRef.current;
+    if (!c?.lat || !c?.lng) { setStatus("error"); setError("검색 기준 좌표가 없습니다."); return; }
+
     const ps = ensureService();
     if (!ps) return;
 
     setStatus("loading");
     setError(null);
+    setResults([]);
+    setMarkers([]);
 
-    const loc = new window.kakao.maps.LatLng(currentCenter.lat, currentCenter.lng);
-    const opts = { location: loc, radius, page: 1, size: 15 };
+    const loc = new window.kakao.maps.LatLng(Number(c.lat), Number(c.lng));
 
-    const cb = (data, s, _pagination) => {
-      if (s === window.kakao.maps.services.Status.OK) {
-        const filtered = isAll ? data : data.filter(d => d.category_group_code === "FD6");
-        setResults(filtered);
-        setStatus(filtered.length ? "ok" : "zero");
-        console.log(filtered);
+    const acc = [];
+    const accMarkers = [];
 
-        // const bounds = new window.kakao.maps.LatLngBounds()
-        let markers = []
+    let page = 1;
+    while (true) {
+      const res = await fetchPage(ps, loc, page);
+      // 중간에 새 검색이 시작되면 중단
+      if (token !== searchTokenRef.current) return;
 
-        for (var i = 0; i < data.length; i++) {
-          markers.push({
-            position: {
-              lat: data[i].y,
-              lng: data[i].x,
-            },
-            content: data[i].place_name,
-          })
-
-          // bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x))
-        }
-        setMarkers(markers)
-
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        // map.setBounds(bounds)
-        
-      } else if (s === window.kakao.maps.services.Status.ZERO_RESULT) {
-        setResults([]);
-        setMarkers([]);
-        setStatus("zero");
-      } else {
+      if (!res.ok) {
         setResults([]);
         setMarkers([]);
         setStatus("error");
-        setError("검색 중 오류가 발생했어요.");
+        setError(res.error || "검색 중 오류가 발생했어요.");
+        return;
       }
-    };
 
-    if (isAll) {
-      // 음식점 전체: FD6
-      ps.categorySearch("FD6", cb, opts);
-    } else {
-      // 특정 카테고리 키워드
-      ps.keywordSearch(chip, cb, opts);
+      acc.push(...res.data);
+      for (const d of res.data) {
+        accMarkers.push({
+          position: { lat: Number(d.y), lng: Number(d.x) },
+          content: d.place_name,
+        });
+      }
+
+      if (res.isEnd) break;
+      page += 1;
     }
-  }, [hasSDK, radius, isAll, chip, ensureService]);
 
+    setResults(acc);
+    setMarkers(accMarkers);
+    setStatus(acc.length ? "ok" : "zero");
+  }, [hasSDK, ensureService, fetchPage]);
 
   return {
     markers,
