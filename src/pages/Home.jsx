@@ -10,7 +10,7 @@ import Button from '../components/Button';
 import Modal from '../components/Modal';
 import RandomModalChild from '../components/RandomModalChild';
 import TryImage from '../assets/try_site.svg'; 
-import EmptyListImage from '../assets/empty_list.svg'; 
+import StoreList from '../components/StoreList';
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -26,6 +26,11 @@ export default function Home() {
     console.log("selectStore: ",selectStore);
     
   },[selectStore])
+
+  const onListClick = (item) => {
+    setSelectStore(item)
+    setModalOpen(true)
+  }
 
   return (
     <HomeContainer>
@@ -100,32 +105,16 @@ export default function Home() {
       </MapArea>
       <ListArea>
         {isStart ?
-        <>
-          {results.length > 0 ?
-            <ReasultList className="searchList">
-              {results.map((list, idx)=>(
-                <ReasultItem key={idx} onClick={()=>{setSelectStore(list); setModalOpen(true)}}>
-                  <div className="title">
-                    <h2>{list.place_name}</h2>
-                    <span>{list.category_name.split(">").map(c => c.trim()).pop()}</span>
-                  </div>
-                  <p>{list.road_address_name}</p>
-                  <p>{list.phone}</p>
-                </ReasultItem>
-              ))}
-            </ReasultList>
-          : 
+          <StoreList
+            results={results}
+            chip={chip}
+            onItemClick={onListClick}
+          />
+          :
           <TryBox>
-            <img src={EmptyListImage} alt="주변에 음식점이 없어요!!" />
-            <p>앗!! 주변에 {chip} 음식점이 없어요!!</p>
+            <img src={TryImage} alt="랜덤 음식점 찾기" />
+            <p>오늘은 뭘 먹어볼까?!?!</p>
           </TryBox>
-          }
-        </>
-        :
-        <TryBox>
-          <img src={TryImage} alt="랜덤 음식점 찾기" />
-          <p>오늘은 뭘 먹어볼까?!?!</p>
-        </TryBox>
         }
       </ListArea>
 
@@ -235,33 +224,6 @@ const TryBox = styled.div`
     text-align: center;
     font-size: 1rem;
     color: #666;
-  }
-`;
-
-const ReasultList = styled.ul`
-  display: flex;
-  gap: 6px;
-  flex-direction: column;
-
-`;
-const ReasultItem = styled.li`
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px; 
-
-  .title {
-    display: flex;
-    align-items: center;
-    font-size: 1rem;
-    gap: 8px;
-
-    h2 {
-      font-weight: 700;
-    }
-    span {
-      font-size: 0.75em;
-    }
   }
 `;
 
