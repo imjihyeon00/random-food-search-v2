@@ -107,12 +107,35 @@ export default function Home() {
       </MapArea>
       {/* 음식점 리스트 */}
       <ListArea>
-        {isStart ?
-          <StoreList
-            results={results}
-            chip={chip}
-            onItemClick={onListClick}
+        {/* 
+          To Do List:
+          error 이미지 추가 필요 
+        */}
+        {error &&
+          <ImageMessage
+            src={TryImage}
+            text={error}
           />
+        }
+        {isStart ?
+          <>
+            {/* 
+              To Do List:
+              loading 이미지 추가 필요 
+            */}
+            {status === "loading" ?
+              <ImageMessage
+                src={TryImage}
+                text="로딩 이미지"
+              />
+              :
+              <StoreList
+                results={results}
+                chip={chip}
+                onItemClick={onListClick}
+              />
+            }
+          </>
           :
           <ImageMessage
             src={TryImage}
@@ -120,10 +143,6 @@ export default function Home() {
           />
         }
       </ListArea>
-      <ImageMessage
-        src={TryImage}
-        text="오늘은 뭘 먹어볼까?!?!"
-      />
       {/* Modal */}
       <Modal
         open={modalOpen}
