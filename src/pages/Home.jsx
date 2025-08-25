@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Map, MapMarker, StaticMap } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
+import { useState } from 'react';
+import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
 import { styled } from 'styled-components';
 import { BUTTON_SIZES_TYPE } from '../constants/styled';
 import { FILTER_LIST } from '../constants/filter';
@@ -11,6 +11,7 @@ import Modal from '../components/Modal';
 import RandomModalChild from '../components/RandomModalChild';
 import TryImage from '../assets/try_site.svg'; 
 import StoreList from '../components/StoreList';
+import ImageMessage from '../components/ImageMessage';
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -19,13 +20,8 @@ export default function Home() {
   const {
     center, isLoading, errMsg, onMapClick,
     chip, setChip,
-    results, markers, searchFood,
+    markers, results, status, error, ready, searchFood,
   } = useMapController({ initialChip: FILTER_LIST[0], radius: 500 });
-
-  useEffect(()=>{
-    console.log("selectStore: ",selectStore);
-    
-  },[selectStore])
 
   const onListClick = (item) => {
     setSelectStore(item)
@@ -62,14 +58,10 @@ export default function Home() {
               <MapMarker
                 key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
                 position={marker.position}
-                // onClick={() => setInfo(marker)}
               >
-                {/* {info &&info.content === marker.content && ( */}
-                  {/* <div style={{color:"#333"}}>{marker.content}</div> */}
-                  <MarkerText>
-                    {marker.content}
-                  </MarkerText>
-                {/* )} */}
+                <MarkerText>
+                  {marker.content}
+                </MarkerText>
               </MapMarker>
             ))}
           </Map>
@@ -93,7 +85,8 @@ export default function Home() {
             </div>
           </FilterBox>
           <Button 
-            text="랜덤 음식점 찾기" 
+            text={status==='loading' ? '검색 중…' : '검색'}
+            disabled={!ready || status === "loading"}
             onClick={()=>{
               searchFood()
               setIsStart(true)
@@ -103,6 +96,7 @@ export default function Home() {
           />
         </FilterArea>
       </MapArea>
+      {/* 음식점 리스트 */}
       <ListArea>
         {isStart ?
           <StoreList
@@ -111,13 +105,17 @@ export default function Home() {
             onItemClick={onListClick}
           />
           :
-          <TryBox>
-            <img src={TryImage} alt="랜덤 음식점 찾기" />
-            <p>오늘은 뭘 먹어볼까?!?!</p>
-          </TryBox>
+          <ImageMessage
+            src={TryImage}
+            text="오늘은 뭘 먹어볼까?!?!"
+          />
         }
       </ListArea>
-
+      <ImageMessage
+        src={TryImage}
+        text="오늘은 뭘 먹어볼까?!?!"
+      />
+      {/* Modal */}
       <Modal
         open={modalOpen}
         title="여기는 어때??"
@@ -206,24 +204,4 @@ const ListArea = styled.div`
   max-width: 1000px;
 `;
 
-const TryBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 70px 0;
-
-  img {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-  }
-
-  p {
-    text-align: center;
-    font-size: 1rem;
-    color: #666;
-  }
-`;
 

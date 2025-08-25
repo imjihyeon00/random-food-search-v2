@@ -19,10 +19,10 @@ export default function StoreList({results, chip, onItemClick}) {
           ))}
         </ReasultList>
       : 
-      <EmptyBox>
-        <img src={EmptyListImage} alt="주변에 음식점이 없어요!!" />
-        <p>앗!! 주변에 {chip} 음식점이 없어요!!</p>
-      </EmptyBox>
+      <ImageMessage
+        src={EmptyListImage}
+        text={`앗!! 주변에 ${chip} 음식점이 없어요!!`}
+      />
       }
     </>
   )
@@ -54,25 +54,5 @@ const ReasultItem = styled.li`
     span {
       font-size: 0.75em;
     }
-  }
-`;
-const EmptyBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 70px 0;
-
-  img {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-  }
-
-  p {
-    text-align: center;
-    font-size: 1rem;
-    color: #666;
   }
 `;
