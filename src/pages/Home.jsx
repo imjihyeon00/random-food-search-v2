@@ -1,17 +1,21 @@
+import { useEffect, useState } from 'react';
+import { Map, MapMarker, StaticMap } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
 import { styled } from 'styled-components';
-import Button from '../components/Button';
+import { BUTTON_SIZES_TYPE } from '../constants/styled';
+import { FILTER_LIST } from '../constants/filter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
-import { BUTTON_SIZES_TYPE } from '../constants/styled';
+import useMapController from '../hook/useMapController';
+import Button from '../components/Button';
+import Modal from '../components/Modal';
+import RandomModalChild from '../components/RandomModalChild';
 import TryImage from '../assets/try_site.svg'; 
 import EmptyListImage from '../assets/empty_list.svg'; 
-import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
-import useMapController from '../hook/useMapController';
-import { FILTER_LIST } from '../constants/filter';
-import { useEffect, useState } from 'react';
 
 export default function Home() {
+  const [modalOpen, setModalOpen] = useState(false);
   const [isStart, setIsStart] = useState(false);
+  const [selectStore, setSelectStore] = useState();
   const {
     center, isLoading, errMsg, onMapClick,
     chip, setChip,
@@ -19,9 +23,9 @@ export default function Home() {
   } = useMapController({ initialChip: FILTER_LIST[0], radius: 500 });
 
   useEffect(()=>{
-    console.log("resultes: ",results);
+    console.log("selectStore: ",selectStore);
     
-  },[results])
+  },[selectStore])
 
   return (
     <HomeContainer>
@@ -100,7 +104,7 @@ export default function Home() {
           {results.length > 0 ?
             <ReasultList className="searchList">
               {results.map((list, idx)=>(
-                <ReasultItem key={idx}>
+                <ReasultItem key={idx} onClick={()=>{setSelectStore(list); setModalOpen(true)}}>
                   <div className="title">
                     <h2>{list.place_name}</h2>
                     <span>{list.category_name.split(">").map(c => c.trim()).pop()}</span>
@@ -124,6 +128,19 @@ export default function Home() {
         </TryBox>
         }
       </ListArea>
+
+      <Modal
+        open={modalOpen}
+        title="여기는 어때??"
+        onClose={() => {
+          setModalOpen(false)
+          setSelectStore()
+        }}
+      >
+        <RandomModalChild
+          item={selectStore}
+        />
+      </Modal>
     </HomeContainer>
   )
 }
@@ -247,3 +264,4 @@ const ReasultItem = styled.li`
     }
   }
 `;
+
