@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
-import { styled } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { BUTTON_SIZES_TYPE } from '../constants/styled';
 import { FILTER_LIST } from '../constants/filter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
+import TryImage from '../assets/try_site.svg'; 
+import ErrorIcon from '../assets/error_icon.svg'; 
 import useMapController from '../hook/useMapController';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
 import RandomModalChild from '../components/RandomModalChild';
-import TryImage from '../assets/try_site.svg'; 
-import StoreList from '../components/StoreList';
 import ImageMessage from '../components/ImageMessage';
+import StoreList from '../components/StoreList';
 
 export default function Home() {
   const mapRef = useRef(null);
@@ -121,27 +122,20 @@ export default function Home() {
       </MapArea>
       {/* 음식점 리스트 */}
       <ListArea>
-        {/* 
-          To Do List:
-          error 이미지 추가 필요 
-        */}
         {error &&
           <ImageMessage
-            src={TryImage}
+            src={ErrorIcon}
             text={error}
           />
         }
         {isStart ?
           <>
-            {/* 
-              To Do List:
-              loading 이미지 추가 필요 
-            */}
             {status === "loading" ?
-              <ImageMessage
-                src={TryImage}
-                text="로딩 이미지"
-              />
+              <Loading>
+                <div></div>
+                <div></div>
+                <div></div>
+              </Loading>
               :
               <StoreList
                 results={results}
@@ -246,4 +240,32 @@ const ListArea = styled.div`
   max-width: 1000px;
 `;
 
+const bounce = keyframes`
+  to {
+    opacity: 0.3;
+    transform: translate3d(0, -1rem, 0);
+  }
+`;
 
+const Loading = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+
+  div {
+    width: 1rem;
+    height: 1rem;
+    margin: 2rem 0.3rem;
+    background: #FFA853;
+    border-radius: 50%;
+    animation: 0.9s ${bounce} infinite alternate;
+
+    &:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+  }
+`;
