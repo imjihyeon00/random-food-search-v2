@@ -137,11 +137,15 @@ export default function Home() {
                 <div></div>
               </Loading>
               :
-              <StoreList
-                results={results}
-                chip={chip}
-                onItemClick={onListClick}
-              />
+              <>
+                {!error &&
+                  <StoreList
+                    results={results}
+                    chip={chip}
+                    onItemClick={onListClick}
+                  />
+                }
+              </>
             }
           </>
           :
