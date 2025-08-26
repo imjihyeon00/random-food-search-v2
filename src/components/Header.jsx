@@ -1,15 +1,26 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
+import Modal from "./Modal";
+import { useState } from "react";
+import HowToModalChild from "./HowToModalChild";
 
 const Header = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <HeaderStyle>
       <HeaderText>오늘 뭐 먹지?<span>v2.0</span></HeaderText>
-      <SiteInfoBtn>
+      <SiteInfoBtn type="button" onClick={()=>{setIsModalOpen(true)}}>
         <FontAwesomeIcon icon={faCircleQuestion} />
         <span>이용방법</span>
       </SiteInfoBtn>
+      <Modal
+        open={isModalOpen}
+        title="이용방법"
+        onClose={()=>{setIsModalOpen(false)}}
+      >
+        <HowToModalChild/>
+      </Modal>
     </HeaderStyle>
   );
 }
