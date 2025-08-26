@@ -5,12 +5,12 @@ export default function Footer() {
     <FooterStyle>
       <FooterBox>
         <FooterText className="copyright">© 2025 오늘 뭐 먹지? All rights reserved.</FooterText>
-        <PolicyLinks>
+        {/* <PolicyLinks>
           <Link to="/">[개인정보 처리방침]</Link>
           <Link to="/">[이용약관]</Link>
           <Link to="/">[쿠키 정책]</Link>
         </PolicyLinks>
-        <FooterText>이 사이트는 광고를 포함하고 있으며, 일부 서비스는 위치 정보를 기반으로 동작합니다.</FooterText>
+        <FooterText>이 사이트는 광고를 포함하고 있으며, 일부 서비스는 위치 정보를 기반으로 동작합니다.</FooterText> */}
       </FooterBox>
     </FooterStyle>
   );
