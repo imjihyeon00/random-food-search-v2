@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
 import { styled } from 'styled-components';
 import { BUTTON_SIZES_TYPE } from '../constants/styled';
@@ -14,6 +14,8 @@ import StoreList from '../components/StoreList';
 import ImageMessage from '../components/ImageMessage';
 
 export default function Home() {
+  const mapRef = useRef(null);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [isStart, setIsStart] = useState(false);
   const [selectStore, setSelectStore] = useState();
@@ -30,12 +32,23 @@ export default function Home() {
     setModalOpen(true)
   }
 
-  // Random으로 가져온 음식점 모당띄우기
+  // Random으로 가져온 음식점 모달띄우기
   useEffect(() => {
-  if (results.length > 0 && randomStore) {
-    onListClick(randomStore);
-  }
-}, [randomStore, results]);
+    if (results.length > 0 && randomStore) {
+      onListClick(randomStore);
+    }
+  }, [randomStore, results]);
+
+  // 검색 완료 후 map위치 변경
+  useEffect(() => {
+    if (!mapRef.current || !center) return;
+    if (!(status === "ok" || status === "zero" || status === "error")) return;
+    if (!window.kakao?.maps?.LatLng) return;
+
+    const latlng = new window.kakao.maps.LatLng(Number(center.lat), Number(center.lng));
+    mapRef.current.setCenter(latlng);
+    mapRef.current.setLevel(4);
+  }, [status, center]);
 
   return (
     <HomeContainer>
@@ -46,6 +59,7 @@ export default function Home() {
             style={{ width: "100%", height: "100%" }}
             level={3}
             onClick={onMapClick}
+            onCreate={(map) => { mapRef.current = map; }}
           >
             {!isLoading && (
               <MapMarker 
