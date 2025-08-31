@@ -6,15 +6,18 @@ const BUTTON_SIZE = {
   [BUTTON_SIZES_TYPE.sm]: {
     PADDING: "5px 32px",
     PADDING_MOBILE: "5px 18px",
+    FONT_SIZE: "0.875rem",
   },
   [BUTTON_SIZES_TYPE.lg]: {
     PADDING: "15px 80px",
     PADDING_MOBILE: "15px 80px",
+    FONT_SIZE: "1rem",
   },
 };
 
 export default function Button({
   text="",
+  type="button",
   onClick,
   disabled = false,
   className = "",
@@ -24,6 +27,7 @@ export default function Button({
 }) {
   return (
     <ButtonStyle
+      type={type}
       className={`custom-button ${className} ${active?"active":""}`}
       onClick={onClick}
       disabled={disabled}
@@ -41,21 +45,23 @@ const ButtonStyle = styled.button`
   padding: ${({ $size }) => $size.PADDING || BUTTON_SIZE[BUTTON_SIZES_TYPE.sm].PADDING};
   border: 1px solid #ddd;
   border-radius: 99px;
-  font-size: 1rem;
+  font-size: ${({ $size }) => $size.FONT_SIZE || BUTTON_SIZE[BUTTON_SIZES_TYPE.sm].FONT_SIZE};
   word-break: keep-all;
 
   &:hover {
     background-color: #FFBC79;
     border-color: #FFBC79;
   }
-  &:disabled {
-    background-color: #e0e0e0;
-    cursor: not-allowed;
-  }
   
   &.active {
     background-color: #FFA853;
     border-color: #FFA853;
+  }
+
+  &:disabled {
+    background-color: #e0e0e0;
+    border-color: #c3c3c3ff;
+    cursor: not-allowed;
   }
 
   @media (max-width: 768px) {
