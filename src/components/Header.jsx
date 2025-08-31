@@ -4,12 +4,15 @@ import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
 import Modal from "./Modal";
 import { useState } from "react";
 import HowToModalChild from "./HowToModalChild";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <HeaderStyle>
-      <HeaderText>오늘 뭐 먹지?<span>v2.0</span></HeaderText>
+      <Link to="/">
+        <HeaderText>오늘 뭐 먹지?<span>v2.0</span></HeaderText>
+      </Link>
       <SiteInfoBtn type="button" onClick={()=>{setIsModalOpen(true)}}>
         <FontAwesomeIcon icon={faCircleQuestion} />
         <span>이용방법</span>
