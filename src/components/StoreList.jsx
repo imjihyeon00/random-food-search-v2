@@ -42,6 +42,7 @@ const ReasultItem = styled.li`
   display: flex;
   flex-direction: column;
   gap: 6px; 
+  cursor: pointer;
 
   .title {
     display: flex;
