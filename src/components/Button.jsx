@@ -47,6 +47,7 @@ const ButtonStyle = styled.button`
   border-radius: 99px;
   font-size: ${({ $size }) => $size.FONT_SIZE || BUTTON_SIZE[BUTTON_SIZES_TYPE.sm].FONT_SIZE};
   word-break: keep-all;
+  color: #333;
 
   &:hover {
     background-color: #FFBC79;
