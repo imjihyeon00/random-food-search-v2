@@ -107,6 +107,7 @@ const CloseButton = styled.button`
   padding: 6px;
   border-radius: 8px;
   cursor: pointer;
+  color: #333;
 
   &:hover { background: rgba(0,0,0,.06); }
   &:focus-visible { outline: 0; box-shadow: 0 0 0 3px rgba(255,168,83,.45); }

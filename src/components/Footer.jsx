@@ -59,8 +59,9 @@ const PolicyLinks = styled.div`
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
-
+  
   a, button {
+    color: #333;
     font-size: 0.875rem;
     font-weight: 700;
   }

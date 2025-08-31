@@ -51,6 +51,7 @@ const SiteInfoBtn = styled.button`
   gap: 10px;
   font-size: 1.75rem;
   font-weight: normal;
+  color: #333;
 
   span {
     font-size: 0.715em;
