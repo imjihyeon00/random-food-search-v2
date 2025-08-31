@@ -1,17 +1,34 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
+import Button from "./Button";
+import Modal from "./Modal";
+import ContactFromModalChild from "./ContactFormModalChild";
+import { useState } from "react";
 export default function Footer() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <FooterStyle>
       <FooterBox>
         <FooterText className="copyright">© 2025 오늘 뭐 먹지? All rights reserved.</FooterText>
-        {/* <PolicyLinks>
-          <Link to="/">[개인정보 처리방침]</Link>
+        <PolicyLinks>
+          {/* <Link to="/">[개인정보 처리방침]</Link>
           <Link to="/">[이용약관]</Link>
-          <Link to="/">[쿠키 정책]</Link>
+          <Link to="/">[쿠키 정책]</Link> */}
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+          >[문의하기]</button>
         </PolicyLinks>
-        <FooterText>이 사이트는 광고를 포함하고 있으며, 일부 서비스는 위치 정보를 기반으로 동작합니다.</FooterText> */}
+        {/* <FooterText>이 사이트는 광고를 포함하고 있으며, 일부 서비스는 위치 정보를 기반으로 동작합니다.</FooterText> */}
       </FooterBox>
+      <Modal 
+        open={isModalOpen}
+        title="문의하기" 
+        onClose={() => setIsModalOpen(false)}
+      >
+        <ContactFromModalChild onClose={() => setIsModalOpen(false)} />
+      </Modal>
     </FooterStyle>
   );
 }
@@ -43,7 +60,7 @@ const PolicyLinks = styled.div`
   align-items: center;
   gap: 10px;
 
-  a {
+  a, button {
     font-size: 0.875rem;
     font-weight: 700;
   }
