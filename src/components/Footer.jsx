@@ -12,9 +12,9 @@ export default function Footer() {
       <FooterBox>
         <FooterText className="copyright">© 2025 오늘 뭐 먹지? All rights reserved.</FooterText>
         <PolicyLinks>
-          {/* <Link to="/">[개인정보 처리방침]</Link>
-          <Link to="/">[이용약관]</Link>
-          <Link to="/">[쿠키 정책]</Link> */}
+          <Link to="/privacy">[개인정보 처리방침]</Link>
+          <Link to="/terms">[이용약관]</Link>
+          {/* <Link to="/">[쿠키 정책]</Link> */}
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
@@ -64,5 +64,6 @@ const PolicyLinks = styled.div`
     color: #333;
     font-size: 0.875rem;
     font-weight: 700;
+    padding: 0;
   }
 `;
