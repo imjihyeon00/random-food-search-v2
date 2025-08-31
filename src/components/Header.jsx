@@ -59,4 +59,10 @@ const SiteInfoBtn = styled.button`
   span {
     font-size: 0.715em;
   }
+
+  @media (max-width: 768px) {
+    span {
+      display: none;
+    }
+  }
 `;
