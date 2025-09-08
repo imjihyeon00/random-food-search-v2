@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleQuestion } from "@fortawesome/free-regular-svg-icons";
-import Modal from "./Modal";
+import Modal from "./modal/Modal";
 import { useState } from "react";
-import HowToModalChild from "./HowToModalChild";
+import HowToModalChild from "./modal/HowToModalChild";
 import { Link } from "react-router-dom";
 
 const Header = () => {

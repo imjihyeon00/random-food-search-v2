@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import Button from "./Button";
-import { BUTTON_SIZES_TYPE } from "../constants/styled";
+import Button from "../Button";
+import { BUTTON_SIZES_TYPE } from "../../constants/styled";
 
 const MAX_LEN = 2000;
 const ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT;

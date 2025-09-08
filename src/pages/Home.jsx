@@ -9,8 +9,8 @@ import TryImage from '../assets/try_site.svg';
 import ErrorIcon from '../assets/error_icon.svg'; 
 import useMapController from '../hook/useMapController';
 import Button from '../components/Button';
-import Modal from '../components/Modal';
-import RandomModalChild from '../components/RandomModalChild';
+import Modal from '../components/modal/Modal';
+import RandomModalChild from '../components/modal/RandomModalChild';
 import ImageMessage from '../components/ImageMessage';
 import StoreList from '../components/StoreList';
 

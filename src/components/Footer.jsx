@@ -1,8 +1,8 @@
 import { styled } from "styled-components";
 import { Link } from "react-router-dom";
 import Button from "./Button";
-import Modal from "./Modal";
-import ContactFromModalChild from "./ContactFormModalChild";
+import Modal from "./modal/Modal";
+import ContactFromModalChild from "./modal/ContactFormModalChild";
 import { useState } from "react";
 export default function Footer() {
   const [isModalOpen, setIsModalOpen] = useState(false);

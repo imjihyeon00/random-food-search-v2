@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { StaticMap } from "react-kakao-maps-sdk";
 import { useMemo } from "react";
-import Button from "./Button";
-import { BUTTON_SIZES_TYPE } from "../constants/styled";
+import Button from "../Button";
+import { BUTTON_SIZES_TYPE } from "../../constants/styled";
 
 export default function RandomModalChild({ item }) { // ✅ 구조분해로 받기
   // Kakao API의 x/y는 문자열일 수 있으니 숫자로 변환
