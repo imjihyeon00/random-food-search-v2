@@ -20,7 +20,7 @@ export default function RandomModalChild({ item }) { // ✅ 구조분해로 받�
 
 
   return(
-    <ModalChild>
+    <Wrap>
       <StoreArea>
 
         <StaticMap
@@ -46,11 +46,11 @@ export default function RandomModalChild({ item }) { // ✅ 구조분해로 받�
         fullWidth={true}
       />
 
-    </ModalChild>
+    </Wrap>
   );
 }
 
-const ModalChild = styled.div`
+const Wrap = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
 import styled, { keyframes } from 'styled-components';
 import { BUTTON_SIZES_TYPE } from '../constants/styled';
@@ -13,24 +13,69 @@ import Modal from '../components/modal/Modal';
 import RandomModalChild from '../components/modal/RandomModalChild';
 import ImageMessage from '../components/ImageMessage';
 import StoreList from '../components/StoreList';
+import ChangelogModalChild from '../components/modal/ChangelogModalChild';
+import useChangelogGate from '../hook/useChangelogNotice';
+import { CHANGELOG } from '../constants/changelog';
 
 export default function Home() {
   const mapRef = useRef(null);
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [isStart, setIsStart] = useState(false);
-  const [selectStore, setSelectStore] = useState();
   const {
     center, isLoading, errMsg, onMapClick,
     chip, setChip,
     markers, results, status, error, ready, searchFood, randomStore
   } = useMapController({ initialChip: FILTER_LIST[0], radius: 500 });
 
+  /**
+   * 모달 관리
+   */
+  // 1) 홈 진입 시 보여줄지 판단
+  const { shouldShow, markDismiss } = useChangelogGate(CHANGELOG.version);
+
+  // 2) 공용 모달 매니저 (type으로 Child 스위칭)
+  const [modal, setModal] = useState({
+    open: false,
+    type: null,          // 'changelog' | 'contact' | 'random' | ...
+    props: {},
+    title: "",
+  });
+
+  const REGISTRY = useMemo(() => ({
+    changelog: ChangelogModalChild,
+    random:  RandomModalChild,
+  }), []);
+
+  const openModal = (type, { title = "", props = {} } = {}) =>
+    setModal({ open: true, type, props, title });
+
+  const closeModal = () =>
+    setModal(prev => ({ ...prev, open: false }));
+
+  // 3) 진입 시 필요할 때만 changelog 자동 오픈(1회)
+  useEffect(() => {
+    if (shouldShow) {
+      openModal("changelog", { title: "업데이트 안내" });
+    }
+  }, [shouldShow]);
+
+  // 4) Child 선택
+  const ActiveChild = modal.type ? REGISTRY[modal.type] : null;
+
+  // 5) 다시 보지 않기(해당 모달 열려 있을 때만)
+  const handleDontShowAgain = () => {
+    if (modal.type !== "changelog") return; // 가드
+    markDismiss();
+    closeModal();
+  };
   
 
+  /**
+   * 리스트 아이템 클릭 시 모달 열기
+   * @param {*} item 
+   */
   const onListClick = (item) => {
-    setSelectStore(item)
-    setModalOpen(true)
+    openModal("random", { title: "여기는 어때?!?!", props: { item } });
   }
 
   // Random으로 가져온 음식점 모달띄우기
@@ -38,7 +83,7 @@ export default function Home() {
     if (results.length > 0 && randomStore) {
       onListClick(randomStore);
     }
-  }, [randomStore, results]);
+  }, [results]);
 
   // 검색 완료 후 map위치 변경
   useEffect(() => {
@@ -156,9 +201,10 @@ export default function Home() {
         }
       </ListArea>
       {/* Modal */}
-      <Modal
-        open={modalOpen}
-        title="여기는 어때??"
+      {/* <Modal
+        open={modal?.open}
+        title={modal?.title}
+        onClose={closeModal}
         onClose={() => {
           setModalOpen(false)
           setSelectStore()
@@ -167,6 +213,20 @@ export default function Home() {
         <RandomModalChild
           item={selectStore}
         />
+      </Modal> */}
+      {/* 공용 모달 */}
+      <Modal 
+        open={modal.open} 
+        title={modal.title} 
+        onClose={closeModal}
+      >
+        {ActiveChild && (
+          <ActiveChild
+            {...modal.props}
+            onClose={closeModal}
+            onDontShowAgain={handleDontShowAgain} // ChangelogContent에서만 사용
+          />
+        )}
       </Modal>
     </HomeContainer>
   )
