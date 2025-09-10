@@ -14,7 +14,7 @@ import RandomModalChild from '../components/modal/RandomModalChild';
 import ImageMessage from '../components/ImageMessage';
 import StoreList from '../components/StoreList';
 import ChangelogModalChild from '../components/modal/ChangelogModalChild';
-import useChangelogGate from '../hook/useChangelogNotice';
+import useChangelogNotice from '../hook/useChangelogNotice';
 import { CHANGELOG } from '../constants/changelog';
 
 export default function Home() {
@@ -31,7 +31,11 @@ export default function Home() {
    * 모달 관리
    */
   // 1) 홈 진입 시 보여줄지 판단
-  const { shouldShow, markDismiss } = useChangelogGate(CHANGELOG.version);
+  const { shouldShow, markDismiss } = useChangelogNotice({
+    version: CHANGELOG.version,
+    lastUpdatedDate: CHANGELOG.date, // "YYYY-MM-DD" 권장
+    expireAfterDays: 30,             // ✅ 30일 기준
+  });
 
   // 2) 공용 모달 매니저 (type으로 Child 스위칭)
   const [modal, setModal] = useState({
@@ -54,9 +58,7 @@ export default function Home() {
 
   // 3) 진입 시 필요할 때만 changelog 자동 오픈(1회)
   useEffect(() => {
-    if (shouldShow) {
-      openModal("changelog", { title: "업데이트 안내" });
-    }
+    if (shouldShow) openModal("changelog", { title: "업데이트 안내" });
   }, [shouldShow]);
 
   // 4) Child 선택
@@ -64,7 +66,7 @@ export default function Home() {
 
   // 5) 다시 보지 않기(해당 모달 열려 있을 때만)
   const handleDontShowAgain = () => {
-    if (modal.type !== "changelog") return; // 가드
+    if (modal.type !== "changelog") return;
     markDismiss();
     closeModal();
   };
