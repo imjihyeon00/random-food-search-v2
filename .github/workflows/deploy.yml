@@ -2,7 +2,8 @@ name: Firebase Deploy (Production)
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 concurrency:
   group: deploy-${{ github.ref }}
@@ -23,6 +24,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 23.11.0
+          cache: npm
+          cache-dependency-path: package.json
 
       - name: Install 
         run: npm install
@@ -36,5 +39,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_RANDOM_FOOD_STORE }}
           projectId: random-food-store
-          channelId: live
 
