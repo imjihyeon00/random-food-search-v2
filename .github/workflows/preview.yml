@@ -22,12 +22,16 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Clean npm auth
+      - name: Reset npm config for public registry (npm v10 safe)
         run: |
-          npm config set registry https://registry.npmjs.org/
-          npm config set always-auth false
+          # CI 홈 디렉토리의 사용자 npmrc를 '공개 레지스트리만' 쓰도록 초기화
+          printf "registry=https://registry.npmjs.org/\nfund=false\naudit=false\n" > $HOME/.npmrc
+
+          # 리포 안에 .npmrc가 실수로 커밋돼 있으면 제거(있어도 무시)
           rm -f .npmrc || true
-          npm config delete //registry.npmjs.org/:_authToken || true
+
+          # 디버그(선택): 현재 레지스트리 확인
+          echo "registry:" $(npm config get registry)
 
       - name: Install deps
         run: npm ci --no-audit --no-fund
