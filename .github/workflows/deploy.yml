@@ -21,8 +21,36 @@ jobs:
           node-version: 23
           cache: npm
 
+      - name: Debug npm configs (safe)
+        run: |
+          echo "userconfig: $(npm config get userconfig)"
+          echo "globalconfig: $(npm config get globalconfig)"
+          echo "registry: $(npm config get registry)"
+          if [ -f .npmrc ]; then echo "repo .npmrc exists"; fi
+          if [ -f "$HOME/.npmrc" ]; then echo "HOME .npmrc exists"; fi
+
+      - name: Force clean npmrc for public registry (bulletproof)
+        run: |
+          # 워크스페이스(레포 루트)에 '깨끗한' .npmrc 생성
+          printf "registry=https://registry.npmjs.org/\nfund=false\naudit=false\n" > .npmrc
+
+          # 혹시 남아 있을지 모르는 토큰성 환경변수 제거
+          unset NPM_TOKEN || true
+          unset NODE_AUTH_TOKEN || true
+
+          # 디버그
+          echo "Using userconfig: $GITHUB_WORKSPACE/.npmrc"
+          cat .npmrc
+        env:
+          GITHUB_WORKSPACE: ${{ github.workspace }}
+
       - name: Install deps
-        run: npm install
+        env:
+          # ⬅️ 이 줄이 핵심: 이번 Job에서 npm이 볼 userconfig를 우리가 만든 파일로 고정
+          NPM_CONFIG_USERCONFIG: ${{ github.workspace }}/.npmrc
+        run: |
+          npm ci --no-audit --no-fund --registry=https://registry.npmjs.org/
+
 
       - name: Create .env for build
         run: |
