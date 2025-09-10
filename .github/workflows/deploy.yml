@@ -23,6 +23,12 @@ jobs:
           cache: npm
           cache-dependency-path: package.json
 
+      - name: Remove default npmrc
+        run: rm -f ~/.npmrc
+
+      - name: Remove lockfile
+        run: rm -f package-lock.json
+
       - name: Install 
         run: npm install
 
