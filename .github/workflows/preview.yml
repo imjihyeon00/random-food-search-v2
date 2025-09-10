@@ -1,0 +1,49 @@
+name: Firebase Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: ["*"]   # 같은 리포의 PR에만 효과적 (fork PR은 secrets 미전달로 배포 실패)
+
+concurrency:
+  group: preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint (optional)
+        run: npm run lint --if-present
+
+      - name: Create .env for build
+        run: |
+          cat <<EOF > .env
+          VITE_KAKAO_API_KEY=${{ secrets.VITE_KAKAO_API_KEY }}
+          VITE_CONTACT_ENDPOINT=${{ secrets.VITE_CONTACT_ENDPOINT }}
+          VITE_RECAPTCHA_SITE_KEY=${{ secrets.VITE_RECAPTCHA_SITE_KEY }}
+          EOF
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Firebase Preview Channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_RANDOM_FOOD_STORE }}
+          projectId: random-food-store
+          channelId: pr-${{ github.event.number }}
+          expires: 7d
