@@ -5,14 +5,31 @@ import Modal from "./modal/Modal";
 import { useState } from "react";
 import HowToModalChild from "./modal/HowToModalChild";
 import { Link } from "react-router-dom";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import SideMenu from "./SideMenu";
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+
+  const onClick = () => {
+    setIsSideMenuOpen(!isSideMenuOpen);
+  };
+
   return (
     <HeaderStyle>
-      <Link to="/">
-        <HeaderText>오늘 뭐 먹지?<span>v2.0</span></HeaderText>
-      </Link>
+      <LeftItems>
+        <CloseButton
+          type="button"
+          aria-label="사이드메뉴"
+          onClick={onClick}
+        >
+          <FontAwesomeIcon icon={faBars} />
+        </CloseButton>
+        <Link to="/">
+          <HeaderText>오늘 뭐 먹지?<span>v2.0</span></HeaderText>
+        </Link>
+      </LeftItems>
       <SiteInfoBtn type="button" onClick={()=>{setIsModalOpen(true)}}>
         <FontAwesomeIcon icon={faCircleQuestion} />
         <span>이용방법</span>
@@ -24,6 +41,10 @@ const Header = () => {
       >
         <HowToModalChild/>
       </Modal>
+      <SideMenu
+        open={isSideMenuOpen}
+        onClose={()=>{setIsSideMenuOpen(false)}}
+      />
     </HeaderStyle>
   );
 }
@@ -39,7 +60,7 @@ const HeaderStyle = styled.header`
 `;
 
 const HeaderText = styled.h1`
-  font-size: 2rem;
+  font-size: 1.85rem;
   font-weight: bold;
 
   span {
@@ -65,4 +86,26 @@ const SiteInfoBtn = styled.button`
       display: none;
     }
   }
+`;
+
+const LeftItems = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const CloseButton = styled.button`
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  padding: 6px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #333;
+
+  &:hover { background: rgba(0,0,0,.06); }
+  &:focus-visible { outline: 0; box-shadow: 0 0 0 3px rgba(255,168,83,.45); }
 `;
