@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import NotFound from "./pages/NotFound";
+import HowTo from "./pages/HowTo";
 import { useKakaoLoader } from "react-kakao-maps-sdk";
 import useScrollToTop from "./hook/useScrollToTop";
 
@@ -45,6 +46,7 @@ export default function App() {
           <Route index element={<Home />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="/how-to" element={<HowTo />} />
           {/* 
           <Route path="/contact" element={<Contact />} /> */}
           <Route path="*" element={<NotFound />} />
