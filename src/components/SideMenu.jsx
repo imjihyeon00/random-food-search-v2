@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 const MENU_ITEMS = [
   { name: "홈", path: "/" },
-  { name: "이용방법(준비중)", path: "/how-to" },
+  { name: "이용방법", path: "/how-to" },
   { name: "블로그 / 소식(준비중)", path: null },
 ];  
 
