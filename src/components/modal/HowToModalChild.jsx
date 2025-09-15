@@ -1,63 +1,21 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
+import { HOWTO_STEPS } from "../../constants/howToSteps";
 
 export default function HowToModalChild() {
+  const steps = useMemo(() => HOWTO_STEPS,[]);
+  
   return (
     <Wrap>
-      <Step>
-        <Num>1</Num>
-        <Txt>
-          <strong>위치 확인</strong>
-          <span>
-            접속 시 현재 위치를 불러옵니다. 지도 중앙의 ⭐ 마커가 내 위치예요.
-            기준점을 바꾸려면 지도를 클릭하세요.
-          </span>
-        </Txt>
-      </Step>
-
-      <Step>
-        <Num>2</Num>
-        <Txt>
-          <strong>필터 선택</strong>
-          <span>
-            <Code>전체 / 한식 / 양식 / 일식 / 중식 / 아시아음식 / 분식</Code> 중
-            원하는 카테고리를 고르세요.
-          </span>
-        </Txt>
-      </Step>
-
-      <Step>
-        <Num>3</Num>
-        <Txt>
-          <strong>검색 시작</strong>
-          <span>
-            <b>“랜덤 음식점 찾기”</b> 버튼을 눌러 주변(<em>반경 약 500m</em>)을
-            검색합니다. 결과는 지도와 목록으로 표시돼요.
-          </span>
-        </Txt>
-      </Step>
-
-      <Step>
-        <Num>4</Num>
-        <Txt>
-          <strong>목록 확인</strong>
-          <span>
-            가게명, 카테고리, 주소, 전화번호를 확인하세요. 없으면 반경을 넓히거나
-            필터를 바꿔보세요.
-          </span>
-        </Txt>
-      </Step>
-
-      <Step>
-        <Num>5</Num>
-        <Txt>
-          <strong>상세 보기</strong>
-          <span>
-            목록 아이템을 누르면 팝업으로 상세 지도가 열립니다. 지도를 클릭하면
-            <b> 카카오맵 상세 페이지</b>가 새 창으로 열려요.
-          </span>
-        </Txt>
-      </Step>
+      {steps.map((step, idx) => (
+        <Step key={step.id}>
+          <Num>{idx + 1}</Num>
+          <Txt>
+            <strong>{step.title}</strong>
+            <span>{step.desc}</span>
+          </Txt>
+        </Step>
+      ))}
 
       <Tips>
         <li>지도를 클릭하면 <b>검색 기준점</b>이 변경됩니다.</li>
