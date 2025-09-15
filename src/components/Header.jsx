@@ -7,6 +7,7 @@ import HowToModalChild from "./modal/HowToModalChild";
 import { Link } from "react-router-dom";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import SideMenu from "./SideMenu";
+import { MOBILE_BREAKPOINT } from "../constants/styled";
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,7 +82,7 @@ const SiteInfoBtn = styled.button`
     font-size: 0.715em;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
     span {
       display: none;
     }

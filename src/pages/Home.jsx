@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Map, MapMarker } from "react-kakao-maps-sdk"; // 카카오 맵 컴포넌트
 import styled, { keyframes } from 'styled-components';
-import { BUTTON_SIZES_TYPE } from '../constants/styled';
+import { BUTTON_SIZES_TYPE, MOBILE_BREAKPOINT } from '../constants/styled';
 import { FILTER_LIST } from '../constants/filter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFilter } from '@fortawesome/free-solid-svg-icons';
@@ -294,7 +294,7 @@ const FilterBox = styled.div`
     gap: 10px;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
     /* 모바일 전용 스타일 */
     flex-direction: column;
   }

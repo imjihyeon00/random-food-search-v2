@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { BUTTON_SIZES_TYPE } from "../constants/styled";
+import { BUTTON_SIZES_TYPE, MOBILE_BREAKPOINT } from "../constants/styled";
 
 const BUTTON_SIZE = {
   [BUTTON_SIZES_TYPE.sm]: {
@@ -65,7 +65,7 @@ const ButtonStyle = styled.button`
     cursor: not-allowed;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: ${MOBILE_BREAKPOINT}) {
     /* 모바일 전용 스타일 */
     padding: ${({ $size }) => $size.PADDING_MOBILE || BUTTON_SIZE[BUTTON_SIZES_TYPE.sm].PADDING_MOBILE};
   }
