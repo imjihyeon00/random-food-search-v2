@@ -29,7 +29,7 @@
 - **Map API**: [Kakao Maps SDK](https://apis.map.kakao.com/)
 - **Routing**: [react-router-dom](https://reactrouter.com/)
 - **Hosting**: [Firebase Hosting](https://firebase.google.com/)
-- **CI/CD**: GitHub Actions (배포 자동화 예정)
+- **CI/CD**: GitHub Actions
 
 ---
 
