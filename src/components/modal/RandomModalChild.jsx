@@ -44,6 +44,7 @@ export default function RandomModalChild({ item }) { // ✅ 구조분해로 받�
         text="카카오 맵으로 이동"
         size={BUTTON_SIZES_TYPE.lg}
         fullWidth={true}
+        onClick={()=>{window.open(item.place_url, "_blank", "noopener,noreferrer");}}
       />
 
     </Wrap>
