@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/generate-feeds.mjs", 
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "feeds": "node scripts/generate-feeds.mjs"
   },
   "dependencies": {
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
